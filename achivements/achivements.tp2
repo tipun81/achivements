@@ -18,7 +18,7 @@ LANGUAGE ~English~ ~en_US~ ~achivements/lang/en_US/strings.tra~
 //LANGUAGE ~French~ ~fr_FR~  ~achivements/lang/en_US/strings.tra~ ~achivements/lang/fr_FR/strings.tra~
 
 BEGIN ~Tipun's Achievements for BGEE, SoD, BG2EE, TWDEE, EET (includes IWD(1/2)_EET)~
-REQUIRE_PREDICATE (GAME_IS ~bg2ee eet~) OR (GAME_IS ~bgee~ AND GAME_INCLUDES ~sod~) OR (GAME_IS ~iwdee~) ~Not compatible game.~
+REQUIRE_PREDICATE (GAME_IS ~bgee bg2ee iwdee eet~) ~Not compatible game.~
 REQUIRE_PREDICATE NOT FILE_EXISTS_IN_GAME ~M_zZachv.lua~ ~Mod already installed.~
 DESIGNATED 10
 
