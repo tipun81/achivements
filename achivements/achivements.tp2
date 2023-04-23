@@ -1,0 +1,52 @@
+BACKUP ~achivements/backup~
+
+AUTHOR ~tipun, https://arcanecoast.ru/forum/index.php~
+
+VERSION ~v1.3~
+
+ALWAYS
+	ACTION_IF ((FILE_EXISTS ~dlc/sod-dlc.zip~) OR (FILE_EXISTS ~sod-dlc.zip~)) THEN BEGIN
+		FAIL ~DLC Merger is required before mods can be installed on this game.~
+	END
+END
+
+/*README ~achivements/readme_en_US.txt~
+       ~achivements/readme_%LANGUAGE%.txt~*/
+
+LANGUAGE ~Russian~ ~ru_RU~ ~achivements/lang/ru_RU/strings.tra~
+LANGUAGE ~English~ ~en_US~ ~achivements/lang/en_US/strings.tra~
+//LANGUAGE ~French~ ~fr_FR~  ~achivements/lang/en_US/strings.tra~ ~achivements/lang/fr_FR/strings.tra~
+
+BEGIN ~Tipun's Achievements for BGEE, SoD, BG2EE, TWDEE, EET (includes IWD(1/2)_EET)~
+REQUIRE_PREDICATE (GAME_IS ~bg2ee eet~) OR (GAME_IS ~bgee~ AND GAME_INCLUDES ~sod~) OR (GAME_IS ~iwdee~) ~Not compatible game.~
+REQUIRE_PREDICATE NOT FILE_EXISTS_IN_GAME ~M_zZachv.lua~ ~Mod already installed.~
+DESIGNATED 10
+
+OUTER_SPRINT ~tilde~ "~"
+
+INCLUDE ~%MOD_FOLDER%/lib/functions.tph~
+INCLUDE ~%MOD_FOLDER%/lib/lua_functions.tph~
+
+INCLUDE ~%MOD_FOLDER%/lib/add_lua_strings.tph~
+
+INCLUDE ~%MOD_FOLDER%/lib/patch_menu.tph~
+
+COPY ~%MOD_FOLDER%/lua/M_utf8.lua~   ~override~
+COPY ~%MOD_FOLDER%/lua/utf8data.lua~ ~override~
+
+INCLUDE ~%MOD_FOLDER%/lib/create_strings.tph~
+INCLUDE ~%MOD_FOLDER%/lib/achievem.tph~
+COPY    ~%MOD_FOLDER%/lua/M_zZachv.lua~ ~override~ EVALUATE_BUFFER
+COPY    ~%MOD_FOLDER%/lua/M_zZachT.lua~ ~override~ EVALUATE_BUFFER
+
+COPY ~%MOD_FOLDER%/bam~ ~override~
+COPY ~%MOD_FOLDER%/bmp~ ~override~
+
+
+
+
+
+
+
+
+
