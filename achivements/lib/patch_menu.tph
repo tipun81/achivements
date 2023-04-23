@@ -1,0 +1,1082 @@
+OUTER_SPRINT ~FCGUIPRB~ ~SOD_FCGUIPRB~
+ACTION_IF (GAME_IS ~bgee~ AND NOT GAME_INCLUDES ~sod~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~BG1_FCGUIPRB~
+END
+ACTION_IF (GAME_IS ~bgee~ AND GAME_INCLUDES ~sod~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~SOD_FCGUIPRB~
+END
+ACTION_IF (GAME_IS ~bg2ee~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~BG2_FCGUIPRB~
+END
+ACTION_IF (GAME_IS ~iwdee~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~IWD_FCGUIPRB~
+	COPY ~%MOD_FOLDER%/png/NPCCHAP.mos~ ~override~
+END
+ACTION_IF (FILE_EXISTS_IN_GAME ~rgdbbox1.png~ AND NOT GAME_IS ~iwdee~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~SOD_FCGUIPRB~
+END
+ACTION_IF (FILE_EXISTS_IN_GAME ~rgdbbox1.png~ AND GAME_IS ~iwdee~) BEGIN
+	OUTER_SPRINT  ~FCGUIPRB~ ~IWD_FCGUIPRB~
+END
+COPY ~%MOD_FOLDER%/png/%FCGUIPRB%.png~ ~override/FCGUIPRB.png~
+
+
+COPY_EXISTING ~ui.menu~ ~override~
+	/* RIGHT_SIDEBAR,  LEFT_SIDEBAR */
+	PATCH_FOR_EACH LR_MENU IN RIGHT_SIDEBAR LEFT_SIDEBAR BEGIN
+		LPF FC_FIND_UI_MENU
+			STR_VAR
+				menu_name = EVAL "%LR_MENU%"
+			RET
+				menu_text      //chargen_race_start
+				menu_menu = menu_text_edit
+				menu_success = success
+				menu_menu_start = offset_start   //menu_menu_start
+				menu_menu_end = offset_end     //menu_menu_end
+		END
+		PATCH_IF menu_success BEGIN
+			SET startfind = 0
+			WHILE ( startfind >= 0 ) BEGIN
+				LPF FC_FIND_UI_MENU_ELEMENT_EX
+					INT_VAR startfind
+					STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "Infinity_OnPortraitLClick(5)"
+					RET element_text success offset_start offset_end
+				END
+				SPRINT ~add_enabled~ ~~
+				PATCH_IF success BEGIN
+					INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+						REPLACE_EVALUATE ~enabled[ %TAB%]*['"]Infinity_GetNumCharacters()[ %TAB%]+>[ %TAB%]+5\(.+\)['"]~
+						BEGIN
+							SPRINT ~add_enabled~ ~%MATCH1%~
+						END
+						~%MATCH0%~
+					END
+					LPF FC_GETSET_ELEMENT_AREA
+						STR_VAR element_text = EVAL "%element_text%"
+						RET coord_x coord_y width height element_text
+					END
+					//13 660 46 48
+					SET coord_x = coord_x + (width - 46) / 2 //coord_x + 6
+					SET coord_y = coord_y + height + 20
+					SPRINT element_text ~button%LNL%%TAB%{ --achievements%LNL%%TAB%%TAB%enabled "worldScreen == e:GetActiveEngine() and zZachShowAchivements == 1 and zzShowAchs == 0%add_enabled%"%LNL%%TAB%%TAB%area %coord_x% %coord_y% 46 48%LNL%%TAB%%TAB%bam "ZZACHIVE"%LNL%%TAB%%TAB%scaleToClip%LNL%%TAB%%TAB%tooltip lua "zZachText.achievems"%LNL%%TAB%%TAB%glow lua	"zZshowAch == 1"%LNL%%TAB%%TAB%clickable lua "sidebarsGreyed %tilde%= 1"%LNL%%TAB%%TAB%action "%LNL%%TAB%%TAB%%TAB%Infinity_PushMenu('ACHIEVEMENTS')%LNL%%TAB%%TAB%"%LNL%%TAB%}~ //%element_text%%LNL%%TAB%
+					LPM FC_INSERT_MENU_ELEMENT
+				END
+				SET startfind = offset_end
+			END
+		END
+		LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+		PATCH_IF menu_success BEGIN
+			SET len = STRING_LENGTH ~%menu_menu%~
+			DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+			INSERT_BYTES menu_menu_start len
+			WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+		END
+	END
+	/* textflash */
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "textflash"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			menu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		SPRINT menu_menu_bak ~%menu_menu%~
+		INNER_PATCH_SAVE menu_menu ~%menu_menu%~ BEGIN
+			REPLACE_TEXTUALLY ~getOpacityForInfoBlock~ ~zZgetOpacityForInfoBlock~
+			REPLACE_TEXTUALLY ~name[ %TAB%]+['"]textflash['"]~ ~name 'zztextflash'~
+		END
+		
+		SPRINT scrollbar ~GUISCRC~
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "getBodyString"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_EVALUATE ~\(scrollbar[ %TAB%]+['"]\)\(.+\)\(['"][ %TAB%%WNL%%LNL%%MNL%]*scrollbar\)~
+				BEGIN
+					SPRINT scrollbar ~%MATCH2%~
+				END
+				~%MATCH0%~
+			END
+			SET coord_x = coord_x + 10
+			SET coord_y = coord_y + 54
+			SET width = width - 10
+			SET height = height - 27
+			INNER_PATCH_SAVE element_text_bak ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~getBodyString()~ ~zZgetTFString(9)~
+			END
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~getBodyString()~ ~zZgetTFString(3)~
+			END
+			SPRINT element_text ~%element_text%%LNL%%TAB%%element_text_bak%~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "getTitleString"
+			RET element_text success offset_start offset_end
+		END
+		SPRINT element_text_bak ~%element_text%~
+		SET staroffs = offset_start
+		SET endoffs = offset_end
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET coord_x = coord_x + 10
+			SET coord_y = coord_y + 54
+			SET width = width - 10
+			SET height = height - 27
+			INNER_PATCH_SAVE element_text_bak ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~getTitleString()~ ~zZgetTFString(2)~
+				REPLACE_EVALUATE ~text[ %TAB%]+color[ %TAB%]+['"]*.+$~
+				BEGIN
+					SPRINT ~newtext~ ~text color D%LNL%%TAB%%TAB%scrollbar '%scrollbar%'%LNL%%TAB%%TAB%scrollbar hide lua "1"~
+				END
+				~%newtext%~
+				REPLACE_EVALUATE ~label[ %TAB%%LNL%%WNL%%MNL%]+{~
+				BEGIN
+					SPRINT ~newtext~ ~text%LNL%%TAB%{~
+				END
+				~%newtext%~
+			END
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~getTitleString()~ ~zZgetTFString(1)~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+			SPRINT element_text ~%element_text_bak%~
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x coord_y width height
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
+			SPRINT element_text_bak ~%element_text%~
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "getSubtitleString"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~getSubtitleString()~ ~zZgetTFString(2)~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END ELSE BEGIN
+			SPRINT element_text ~%element_text_bak%~
+			SET offset_start = staroffs
+			SET offset_end = endoffs
+			LPM FC_INSERT_MENU_ELEMENT
+		END
+		
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "OnLeftPanelButtonClick"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			SPRINT element_text ~~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "textflashes"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~textflashes~ ~zztextflashes~
+			END
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		SPRINT menu_menu ~%menu_menu_bak%%LNL%%menu_menu%~
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+	/* WORLD_ACTIONBAR */
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "WORLD_ACTIONBAR"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			menu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		LPF FC_PATCH_MENU_OPEN_CLOSE
+			STR_VAR
+				menu_text = EVAL "%menu_menu%"
+				edit_string = EVAL "if zZrestartAchievem == 0 then%LNL%%TAB%%TAB%%TAB%Infinity_PushMenu('SHOW_ACHIVEMENTS')%LNL%%TAB%%TAB%%TAB%zZrestartAchievem = 1%LNL%%TAB%%TAB%end"
+			RET
+				success
+				menu_menu = return_text
+		END
+		LPF FC_PATCH_MENU_OPEN_CLOSE
+			INT_VAR
+				insert = 1
+			STR_VAR
+				menu_text = EVAL "%menu_menu%"
+				edit_string = EVAL "zZsaveAch()"
+			RET
+				success
+				menu_menu = return_text
+		END
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+	/* WORLD_DIALOG */
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "WORLD_DIALOG"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			menu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		LPF FC_PATCH_MENU_OPEN_CLOSE
+			STR_VAR menu_text = EVAL "%menu_menu%" edit_string = "zzShowAchs = 1"
+			RET success menu_menu = return_text
+		END
+		LPF FC_PATCH_MENU_OPEN_CLOSE
+			INT_VAR type = 1
+			STR_VAR menu_text = EVAL "%menu_menu%" edit_string = "zzShowAchs = 0"
+			RET success menu_menu = return_text
+		END
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+	/* ESC_MENU, START_OPTIONS */
+	PATCH_FOR_EACH LR_MENU IN ESC_MENU START_OPTIONS BEGIN
+		LPF FC_FIND_UI_MENU
+			STR_VAR
+				menu_name = EVAL "%LR_MENU%"
+			RET
+				menu_text      //chargen_race_start
+				menu_menu = menu_text_edit
+				menu_success = success
+				menu_menu_start = offset_start   //menu_menu_start
+				menu_menu_end = offset_end     //menu_menu_end
+		END
+		PATCH_IF menu_success BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "GAMEPLAY_BUTTON"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR
+						replace = 0
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_type = "action"
+						action_string = "zZZsaveAchInGame = true"
+						action_check = "Infinity_PushMenu"
+					RET
+						element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT 
+			END
+		END
+		LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+		PATCH_IF menu_success BEGIN
+			SET len = STRING_LENGTH ~%menu_menu%~
+			DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+			INSERT_BYTES menu_menu_start len
+			WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+		END
+	END
+	/* LOAD */
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "LOAD"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			menu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		SET staroffs = offset_start
+		SET endoffs  = offset_end
+		SET startfind = 0
+		WHILE ( startfind >= 0 ) BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				INT_VAR startfind
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "list" search_str = "loadScreen:LoadGame"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR
+						replace = 0 position = 1 nocreate = 1
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_type = "actionDbl"
+						action_string = "Infinity_PushMenu('SHOW_ACHIVEMENTS')%LNL%%TAB%%TAB%%TAB%zZrestartAchievem = 0"
+						action_check = "loadScreen:LoadGame"
+					RET
+						element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT 
+			END
+			SET startfind = offset_end		
+		END
+		SET offset_start = staroffs
+		SET offset_end  = endoffs
+		SET startfind = 0
+		WHILE ( startfind >= 0 ) BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				INT_VAR startfind
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "loadScreen:LoadGame"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR
+						replace = 0 position = 1 nocreate = 1
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_type = "actionDbl"
+						action_string = "Infinity_PushMenu('SHOW_ACHIVEMENTS')%LNL%%TAB%%TAB%%TAB%zZrestartAchievem = 0"
+						action_check = "loadScreen:LoadGame"
+					RET
+						element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT 
+			END
+			SET startfind = offset_end		
+		END
+		SET offset_start = staroffs
+		SET offset_end  = endoffs
+		SET startfind = 0
+		WHILE ( startfind >= 0 ) BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				INT_VAR startfind
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "loadScreen:LoadGame"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				LPF FC_REPLACE_ELEMENT_ACTION
+					INT_VAR
+						replace = 0 position = 1 nocreate = 1
+					STR_VAR
+						element_text = EVAL "%element_text%"
+						action_type = "action"
+						action_string = "Infinity_PushMenu('SHOW_ACHIVEMENTS')%LNL%%TAB%%TAB%%TAB%zZrestartAchievem = 0"
+						action_check = "loadScreen:LoadGame"
+					RET
+						element_text
+				END
+				LPM FC_UPDATE_MENU_ELEMENT 
+			END
+			SET startfind = offset_end		
+		END
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+	/* EPILOGUE */
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "EPILOGUE"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			smenu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		LPF FC_PATCH_MENU_OPEN_CLOSE
+			STR_VAR menu_text = EVAL "%menu_menu%" edit_string = EVAL "zZachDEpil = Infinity_GetScriptVarInt('ACH_SHOW_ACH')%LNL%%TAB%%TAB%if zZachDEpil == 1 then	zZachEpilogue()	end"
+			RET success menu_menu = return_text
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "NPCCHAP"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			SPRINT element_text ~label%LNL%%TAB%{%LNL%%TAB%%TAB%enabled "zZachDEpil == 1"%LNL%%TAB%%TAB%area	0 0 0 0%LNL%%TAB%%TAB%text lua "zZepilBtnBamX()"%LNL%%TAB%}%LNL%%TAB%%element_text%~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "epilogueImage"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET coord_xa = coord_x - 7
+			SET coord_ya = coord_y - 7
+			SET widtha  = width   + 14
+			SET heighta  = height  + 14
+			SPRINT element_text ~label%LNL%%TAB%{%LNL%%TAB%%TAB%area %coord_xa% %coord_ya% %widtha% %heighta%%LNL%%TAB%%TAB%rectangle 0%LNL%%TAB%}%LNL%%TAB%%element_text%~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "epilogueImage"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET coord_xa = coord_x - 7
+			SET coord_ya = coord_y - 90
+			SET coord_xb = coord_x + 60
+			SET coord_yb = coord_y + 120
+			SPRINT element_text ~label
+	{
+		enabled "zZachDEpil == 1" 
+		area %coord_xa% %coord_ya% 224 74
+		text lua "zZachFromAll"
+		text style 'title'
+		text color	'$'
+		text shadow	1
+	}
+	label
+	{
+		enabled "zZachDEpil == 1" 
+		area %coord_xb% %coord_yb% 90 90
+		bam	lua "zZepilBtnBam"
+		sequence 0
+		frame lua "zZepilBtnSeq"
+		scaletoclip
+	}~
+			LPM FC_INSERT_MENU_ELEMENT
+		END
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "text_CHAPTERSCROLL_auto"
+			RET element_text success offset_start offset_end
+		END
+		PATCH_IF success BEGIN
+			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+				REPLACE_TEXTUALLY ~name~ ~enabled "zZachDEpil == 0"%LNL%%TAB%%TAB%name~
+			END
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET widtha = width - 62
+			SPRINT element_text ~list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				area 0 0 -1 50
+			}
+			label
+			{
+				enabled "rowNumber == zZcurrentItem"
+				area 0 0 -1 -1
+				fill 130 55 10 50
+			}
+			button
+			{
+				area 3 3 48 48
+				bam lua "zZachDoneEpilogue[rowNumber][1]"
+				frame lua "zZachDoneEpilogue[rowNumber][2]"
+				scaleToClip
+			}
+			label
+			{
+				area 60 2 %widtha% 17
+				text lua "zZachDoneEpilogue[rowNumber][3] .. ' (^E' .. zZgetAchDateString(zZachDoneEpilogue[rowNumber][5], 1) .. '^-)'"
+				text style 'title'
+				text color	'D'
+				text align left center
+			}
+			label
+			{
+				area 60 23 %widtha% 25
+				text lua "zZachDoneEpilogue[rowNumber][4]"
+				text style 'label'
+				text align left center
+			}
+		}
+		enabled "zZachDEpil == 1"
+		area %coord_x% %coord_y% %width% %height%
+		rowheight dynamic
+		hidehighlight
+		table	"zZachDoneEpilogue"
+		var "zZcurrentItem"
+		scrollbar 'GUISCRC'
+		scrollbar func 'UpdateChapterScroll'
+		scrollbar hide lua 'text_CHAPTERSCROLL_auto == 1'
+		action
+		"
+			text_CHAPTERSCROLL_auto = 0
+		"
+	}%LNL%%TAB%%element_text%~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		PATCH_IF GAME_IS ~iwdee~ BEGIN
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "DONE_BUTTON"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+					REPLACE_TEXTUALLY ~bam.*$~ ~bam GUIBUTMT%LNL%%TAB%%TAB%scaleToClip~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+			LPF FC_FIND_UI_MENU_ELEMENT_EX
+				STR_VAR menu_text = EVAL "%menu_menu%" element_name = "button" search_str = "REPLAY_BUTTON"
+				RET element_text success offset_start offset_end
+			END
+			PATCH_IF success BEGIN
+				INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
+					REPLACE_TEXTUALLY ~bam.*$~ ~bam GUIBUTMT%LNL%%TAB%%TAB%scaleToClip~
+				END
+				LPM FC_UPDATE_MENU_ELEMENT
+			END
+		END
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+	
+	/* JOURNAL - add achievements */
+	SPRINT  ~GUIBUTMT~  ~GUIBUTMT~
+	SPRINT  ~GUIBUTNTL~ ~GUIBUTNT~
+	SPRINT  ~GUIBUTNTM~ ~GUIBUTNT~
+	SPRINT  ~GUIBUTNTR~ ~GUIBUTNT~
+	SPRINT  ~butsequencemt~ ~sequence 0~
+	SPRINT  ~butsequencent~ ~sequence 0~
+	PATCH_IF (GAME_IS ~bgee~ AND NOT GAME_INCLUDES ~sod~) OR (GAME_IS ~bg2ee~ AND NOT FILE_EXISTS_IN_GAME ~GUIBUTMT.bam~) BEGIN
+		SPRINT  ~GUIBUTMT~  ~GUIOSTLM~
+		SPRINT  ~GUIBUTNTL~ ~GUIOSTUL~
+		SPRINT  ~GUIBUTNTM~ ~GUIOSTUM~
+		SPRINT  ~GUIBUTNTR~ ~GUIOSTUR~
+	END
+	PATCH_IF (GAME_IS ~iwdee~) BEGIN
+		SPRINT  ~butsequencemt~ ~%LNL%%TAB%%TAB%sequenceonce lua "getRandomButtonSequence('GUIBUTMT')"~
+		SPRINT  ~butsequencent~ ~%LNL%%TAB%%TAB%sequenceonce lua "getRandomButtonSequence('GUIBUTNT')"~
+	END
+	
+	LPF FC_FIND_UI_MENU
+		STR_VAR
+			menu_name = "JOURNAL"
+		RET
+			menu_text      //chargen_race_start
+			menu_menu = menu_text_edit
+			menu_success = success
+			menu_menu_start = offset_start   //menu_menu_start
+			menu_menu_end = offset_end     //menu_menu_end
+	END
+	PATCH_IF menu_success BEGIN
+		//BLOCK achievements
+		SPRINT ~menu_menu~ ~%menu_menu%%LNL%menu
+{
+	name 'SHOW_ACHIVEMENTS'
+	align left top
+	ignoreEsc
+	onOpen "
+		zZshowAch = 0
+		zZachInit()
+	"
+	onClose "
+		zZachDone = {}
+		zZachActive = {}
+		zZachNotDone = {}
+		zZachievemTable = {}
+	"
+	label
+	{
+		area 0 0 1 1
+		text lua "zZshowAchTextFlash()"
+	}
+}
+menu
+{
+	name 'ACHIEVEMENTS'
+	align center center
+	modal
+	onOpen "
+		zZachGenerateTables()
+		zZachActiveTab = 1
+		zZshowAch = 1
+		zZachFiltTblCreate()
+		zZachItemVar = 1
+		CheckPauseJournalBegin()
+		zzLockScrolJournal(1)
+		zZachSortTbl(zZachActiveTab, zZachSort)
+	"
+	onClose "
+		zZshowAch = 0
+		zZachFilterDoneText = ''
+		zZachDateFilt = 0
+		zZachFiltTbl = {}
+		zZachDone = {}
+		zZachActive = {}
+		zZachNotDone = {}
+		zzLockScrolJournal(2)
+		CheckPauseJournalEnd()
+	"
+	label
+	{
+		area	0 -2 944 768
+		rectangle	1
+		rectangle opacity 120
+	}
+	label
+	{
+		area	0 -2 944 768
+		mosaic	'FCGUIPRB'
+	}
+	button
+	{
+		area 205 130 160 44
+		bam '%GUIBUTNTL%'
+		%butsequencent%
+		frame lua	"zZgetActiveFrame(1, zZachActiveTab)"
+		scaleToClip
+		text lua "zZachText.achDone"
+		text style	"button"
+		action "
+			zZachActiveTab = 1
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		area 387 130 160 44
+		bam '%GUIBUTNTM%'
+		%butsequencent%
+		frame lua	"zZgetActiveFrame(2, zZachActiveTab)"
+		scaleToClip
+		text lua "zZachText.achActive"
+		text style	"button"
+		clickable lua "zZachShowAchivementsActive == 1"
+		action "
+			zZachActiveTab = 2
+			if zZachSort == 3 then zZachSort = 2 end
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		area 569 130 160 44
+		bam '%GUIBUTNTR%'
+		%butsequencent%
+		frame lua	"zZgetActiveFrame(3, zZachActiveTab)"
+		scaleToClip
+		text lua "zZachText.achNoDone"
+		text style	"button"
+		clickable lua "zZachShowAchivementsNodone == 1"
+		action "
+			zZachActiveTab = 3
+			if zZachSort == 3 then zZachSort = 2 end
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	label
+	{
+		area 248 34 446 38
+		text lua "zZachText.achievems"
+		text style	"title"
+		text color	'D'
+	}
+	label
+	{
+		area 248 80 446 30
+		text lua "zZgetNumAchivemDone()"
+		text style	"title"
+		text color	'$'
+	}
+	label
+	{
+		area		90 115 760 3
+		progressbar lua "getPercent(#zZachDone, (#zZachActive + #zZachDone))"
+		greyscale	0
+		progressbar color	'9'
+		progressbar full	'9'
+		enabled "zZachShowAchivementsActive == 1"
+	}
+	--filter
+	label
+	{
+		area		600 670 60 59
+		text lua	"stringsAll.zZportFilt"
+		text style	'label'
+		text align	center center
+	}
+	label
+	{
+		area		662 670 176 29
+		fill		111 111 111 64
+	}
+	edit
+	{
+		area		665 673 170 23
+		var			zZachFilterDoneText
+		placeholder	'^E...^-'
+		text style	'edit'
+		maxlines	1
+		align	center center
+	}
+	button
+	{
+		area		662 700 176 29
+		text lua	"zZachFFilltDataLbl(zZachItemVar)"
+		text style	'label'
+		text align	center center
+		sound		""
+		clickable lua "zZachActiveTab == 1"
+		fill		111 111 111 64
+		action		"zZshowAchFilter = 1"
+	}
+	--sort
+	button
+	{
+		area 140 668 20 20
+		bam ROUNDBUT
+		frame lua "zZgetActiveFrame(1, zZachSort)"
+		scaleToClip
+		action
+		"
+			zZachSort = 1
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		area 170 668 150 20
+		text lua "zZachText.achSortNumber"
+		text style	'label'
+		text align	left center
+		sound ''
+		action
+		"
+			zZachSort = 1
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		area 140 688 20 20
+		bam ROUNDBUT
+		frame lua "zZgetActiveFrame(2, zZachSort)"
+		scaleToClip
+		action
+		"
+			zZachSort = 2
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		area 170 688 150 20
+		text lua "zZachText.achSortLabel"
+		text style	'label'
+		text align	left center
+		sound ''
+		action
+		"
+			zZachSort = 2
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		clickable lua "zZachActiveTab == 1"
+		area 140 708 20 20
+		bam ROUNDBUT
+		frame lua "zZgetActiveFrame(3, zZachSort)"
+		scaleToClip
+		action
+		"
+			zZachSort = 3
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	button
+	{
+		clickable lua "zZachActiveTab == 1"
+		area 170 708 150 20
+		text lua "zZachText.achSortDate"
+		text style	'label'
+		text align	left center
+		sound ''
+		action
+		"
+			zZachSort = 3
+			zZachSortTbl(zZachActiveTab, zZachSort)
+		"
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				enabled "zZachFilterDone(rowNumber) and zZachFilterDoneDate(zZachDone[rowNumber][8])"
+				area 0 0 -1 60
+			}
+			label
+			{
+				enabled "rowNumber == zZcurrentItem and zZachFilterDone(rowNumber) and zZachFilterDoneDate(zZachDone[rowNumber][8])"
+				area 0 0 -1 -1
+				fill 130 55 10 50
+			}
+			button
+			{
+				enabled "zZachFilterDone(rowNumber) and zZachFilterDoneDate(zZachDone[rowNumber][8])"
+				area 3 3 54 54
+				bam lua "zZachDone[rowNumber][4]"
+				frame lua "zZachDone[rowNumber][5]"
+				scaleToClip
+			}
+			label
+			{
+				enabled "zZachFilterDone(rowNumber) and zZachFilterDoneDate(zZachDone[rowNumber][8])"
+				area 70 3 540 17
+				text lua "zZachDone[rowNumber][2] .. zZgetAchDateString(zZachDone[rowNumber][8])"
+				text style 'title'
+				text color	'M'
+				text align left center
+			}
+			label
+			{
+				enabled "zZachFilterDone(rowNumber) and zZachFilterDoneDate(zZachDone[rowNumber][8])"
+				area 70 23 540 34
+				text lua "zZachDone[rowNumber][3]"
+				text style 'label'
+				text color	'5'
+				text align left center
+			}
+		}
+		enabled "zZachActiveTab == 1"
+		area 160 205 620 415
+		rowheight dynamic
+		hidehighlight
+		table	"zZachDone"
+		var "zZcurrentItem"
+		scrollbar 'GUISCRC'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				enabled "zZachFilterActive(rowNumber)"
+				area 0 0 -1 60
+			}
+			label
+			{
+				enabled "rowNumber == zZcurrentItem and zZachFilterActive(rowNumber)"
+				area 0 0 -1 -1
+				fill 130 55 10 50
+			}
+			button
+			{
+				enabled "zZachFilterActive(rowNumber)"
+				area 3 3 54 54
+				bam lua "zZachActive[rowNumber][4]"
+				frame lua "zZachActive[rowNumber][5]"
+				scaleToClip
+			}
+			label
+			{
+				enabled "zZachFilterActive(rowNumber)"
+				area 70 3 540 17
+				text lua "zZachActive[rowNumber][2]"
+				text style 'title'
+				text color	'M'
+				text align left center
+			}
+			label
+			{
+				enabled "zZachFilterActive(rowNumber)"
+				area 70 23 540 34
+				text lua "zZachActive[rowNumber][3]"
+				text style 'label'
+				text color	'5'
+				text align left center
+			}
+		}
+		enabled "zZachActiveTab == 2"
+		area 160 205 620 415
+		rowheight dynamic
+		hidehighlight
+		table	"zZachActive"
+		var "zZcurrentItem"
+		scrollbar 'GUISCRC'
+	}
+	list
+	{
+		column
+		{
+			width 100
+			label
+			{
+				enabled "zZachFilterNotDone(rowNumber)"
+				area 0 0 -1 60
+			}
+			label
+			{
+				enabled "rowNumber == zZcurrentItem and zZachFilterNotDone(rowNumber)"
+				area 0 0 -1 -1
+				fill 130 55 10 50
+			}
+			button
+			{
+				enabled "zZachFilterNotDone(rowNumber)"
+				area 3 3 54 54
+				bam lua "zZachNotDone[rowNumber][4]"
+				frame lua "zZachNotDone[rowNumber][5]"
+				scaleToClip
+			}
+			label
+			{
+				enabled "zZachFilterNotDone(rowNumber)"
+				area 70 3 540 17
+				text lua "zZachNotDone[rowNumber][2]"
+				text style 'title'
+				text color	'M'
+				text align left center
+			}
+			label
+			{
+				enabled "zZachFilterNotDone(rowNumber)"
+				area 70 20 540 20
+				text lua "zZachNotDone[rowNumber][3]"
+				text style 'label'
+				text color	'5'
+				text align left center
+			}
+			label
+			{
+				enabled "zZachFilterNotDone(rowNumber)"
+				area 70 40 540 17
+				text lua "zZgetReason(zZachNotDone[rowNumber])"
+				text style 'label'
+				text color	'5'
+				text align left center
+			}
+		}
+		enabled "zZachActiveTab == 3"
+		area 160 205 620 415
+		rowheight dynamic
+		hidehighlight
+		table	"zZachNotDone"
+		var "zZcurrentItem"
+		scrollbar 'GUISCRC'
+	}
+	label
+	{
+		enabled "zZshowAchFilter %tilde%= 0"
+		area 657 324 186 410
+		rectangle 0
+		rectangle opacity 150
+	}
+	list
+	{
+		column 
+		{ 
+			width 100
+			label
+			{
+				enabled  "rowNumber == mouseoverRow"
+				area 0 0 -1 -1
+				fill 112 111 111 65
+			}
+			label
+			{
+				area 5 0 -1 -1
+				text lua "zZachFFilltDataLbl(rowNumber)"
+				text style "label"
+				text align left center
+			}
+		}
+		enabled "zZshowAchFilter %tilde%= 0"
+		area 662 329 176 400
+		hidehighlight
+		rowheight	20
+		table		"zZachFiltTbl"
+		var			"zZachItemVar"
+		scrollbar 'GUISCRC'
+		action "zZachCheckFilter(zZachItemVar); zZshowAchFilter = 0"
+		actionEnter ""
+		actionExit "zZshowAchFilter = 0"
+	}
+	button
+	{
+		area 357 680 230 44
+		bam '%GUIBUTMT%'
+		%butsequencemt%
+		text "DONE_BUTTON"
+		text style "button"
+		on escape
+		action
+		"
+			Infinity_PopMenu('ACHIEVEMENTS')
+		"
+	}
+}~
+		//BLOCKEND
+	END
+	LPF FC_RESTORE_MENU_COMMENTS STR_VAR menu_text = EVAL "%menu_menu%" RET menu_menu = menu_text END
+	PATCH_IF menu_success BEGIN
+		SET len = STRING_LENGTH ~%menu_menu%~
+		DELETE_BYTES menu_menu_start ( menu_menu_end - menu_menu_start )
+		INSERT_BYTES menu_menu_start len
+		WRITE_ASCIIE menu_menu_start ~%menu_menu%~
+	END
+
+
+
+
+
+
+
+
+
+
+
+

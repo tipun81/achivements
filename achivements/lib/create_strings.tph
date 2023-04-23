@@ -1,0 +1,359 @@
+//zZachText = {
+OUTER_SPRINT ~zZachText_list~ ~~
+OUTER_SPRINT ~zZachText~ @1000
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achievs = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1001
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achievems = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1002
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achieveDone = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1003
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%noNPC = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1004
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%noClassKit = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1005
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%otherStronghold = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1006
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%tombGorion = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1007
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achDiffChange = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1008
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achDiffCheck = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1009
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%onGameStart = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1010
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%noCurrGame = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1011
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%dungIren = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1012
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achDone = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1013
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achActive = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1014
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoDone = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1015
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achReason = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1016
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achAchDone = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1017
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achAchAcnive = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1018
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achAchNoDone = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1019
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achIz = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1020
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achSortNumber = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1021
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achSortLabel = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1022
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achSortDate = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1023
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoOne = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1024
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoBard = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1025
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoSixChar = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1026
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoSorc = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1027
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achNoMonk = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1028
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achOnlyBG = "%zZachText%",~
+OUTER_SPRINT ~zZachText~ @1029
+OUTER_SPRINT ~zZachText_list~ ~%zZachText_list%%LNL%%TAB%achOnlyHoW = "%zZachText%",~
+
+//stringsAll
+OUTER_SPRINT ~stringsAll_list~ ~~
+OUTER_SPRINT ~stringsAll~ @1050
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%lvl = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1051
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%exp = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1052
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%acti = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1053
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%notacti = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1054
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%slashing = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1055
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%piercing = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1056
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%crushing = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1057
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%missile = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1058
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%originalClass = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1059
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%basicAttr = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1060
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%dice = "d" or "D",~
+OUTER_SPRINT ~stringsAll~ @1061
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%fold = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1062
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%unfold = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1063
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%themain = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1064
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%noXP = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1065
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%clLeather = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1066
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%clArmor = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1067
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzLClick = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1068
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzRClick = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1069
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzLvlUp = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1070
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzOverflow = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1071
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzOverflowZero = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1072
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzOverflowOne = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1073
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzOverflowNoOne = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1074
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzStoredPoints = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1075
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzDifferes = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1076
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%charName = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1077
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZremainsChoose = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1078
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzPage = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1079
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNIdentyf = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1080
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNoteTw = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1081
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNoteEdit = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1082
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNoteEditDate = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1083
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzAll = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1084
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzMisc = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1085
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzAmulet = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1086
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzArmor = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1087
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBelt = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1088
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBoot = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1089
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzArrow = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1090
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBracers = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1091
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzHelmet = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1092
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzKey = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1093
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzPotion = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1094
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzRing = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1095
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzScroll = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1096
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzShield = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1097
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBullet = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1098
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBow = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1099
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzDagger = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1100
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzMace = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1101
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzSling = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1102
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzSmallSword = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1103
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzLargeSword = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1104
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzHammer = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1105
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzMorningstar = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1106
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzFlail = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1107
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzDart = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1108
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzAxe = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1109
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzStaff = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1110
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCrossbow = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1111
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzSpear = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1112
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzHalberd = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1113
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBolt = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1114
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCloack = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1115
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzGem = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1116
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzWand = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1117
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBag = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1118
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzBook = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1119
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzContSelAll = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1120
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzContDeselect = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1121
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzIn = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1122
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzGP = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1123
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzDonateAmtChng = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1124
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCurrLoc = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1125
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNoLoadSel = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1126
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNoSaveSel = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1127
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzGameVer = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1128
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzNo = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1129
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZquestList = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1130
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportSort = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1131
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportSortFileAZ = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1132
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportSortFileZA = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1133
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportSortNameAZ = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1134
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportSortNameZA = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1135
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportFilt = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1136
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportFiltName = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1137
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportFiltNoName = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1138
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zZportFiltEdit = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1139
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%identAll = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1140
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%identNoEmpty = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1141
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%identNoIdent = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1142
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%identNoLore = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1143
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%identOtherInv = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1144
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLoot = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1145
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootOpt = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1146
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootInfo = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1147
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootWPrice = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1148
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootOn = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1149
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootCritical = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1150
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootEnch = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1151
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootGold = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1152
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootPrice = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1153
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootJewel = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1154
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzSkillAmtChng = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1155
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzSs = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1156
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzDay = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1157
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCurrChap = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1158
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupAmmo = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1159
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootKeys = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1160
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%pickupLootOther = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1161
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalMinut = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1162
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalHour = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1163
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalHourA = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1164
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalHourB = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1165
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalDay = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1166
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalDayA = "%stringsAll%",~
+OUTER_SPRINT ~stringsAll~ @1167
+OUTER_SPRINT ~stringsAll_list~ ~%stringsAll_list%%LNL%%TAB%zzCalDayB = "%stringsAll%",~
+
+//eetStrings
+/*OUTER_SPRINT ~eetStrings_list~ ~~
+OUTER_SPRINT ~eetStrings~ @1200
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_BG1 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1201
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_SOD = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1202
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_SOA = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1203
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_TOB = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1204
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_BP1 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1205
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_BP2 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1206
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TEXT_TUT = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1207
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_BG1 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1208
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_SOD = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1209
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_SOA = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1210
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_TOB = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1211
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_BP1 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1212
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_BP2 = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1213
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CMP_TITLE_TUT = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1214
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_WARNING_TITLE = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1215
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_WARNING_TEXT = "%eetStrings%",~
+OUTER_SPRINT ~eetStrings~ @1216
+OUTER_SPRINT ~eetStrings_list~ ~%eetStrings_list%%LNL%%TAB%EET_CHAPTER = "%eetStrings%",~*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

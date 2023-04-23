@@ -1,0 +1,632 @@
+/* SORT_NUMERIC_ARRAY */
+DEFINE_PATCH_MACRO SORT_NUMERIC_ARRAY BEGIN
+	LOCAL_SET idx = 0 LOCAL_SET i = 0 LOCAL_SET j = 0 LOCAL_SET v1 = 0 LOCAL_SET v2 = 0
+	LOCAL_SET r = VARIABLE_IS_SET ~sort_reverse~ ? sort_reverse : 0
+	LOCAL_SET s = VARIABLE_IS_SET ~sort_size~ ? sort_size : "-1"
+	PATCH_IF (NOT ~%sort_array_name%~ STR_EQ ~~) BEGIN
+		PATCH_IF (s < 0) BEGIN
+			SET idx = 0
+			WHILE (idx != "-1") BEGIN
+				PATCH_IF (VARIABLE_IS_SET EVAL ~%sort_array_name%_%idx%~) BEGIN
+					SET idx += 1
+				END ELSE BEGIN
+					SET s = idx
+					SET idx = "-1"
+				END
+			END
+		END
+		FOR (j = 0; j < s - 1; ++j) BEGIN
+			SET idx = j
+			SET v1 = EVAL ~%sort_array_name%_%idx%~
+			FOR (i = j + 1; i < s; ++i) BEGIN
+				SET v2 = EVAL ~%sort_array_name%_%i%~
+				PATCH_IF ((r && v2 > v1) || (NOT r && v2 < v1)) BEGIN
+					SET idx = i
+					SET v1 = EVAL ~%sort_array_name%_%idx%~
+				END
+			END
+			PATCH_IF (idx != j) BEGIN
+				SET v1 = EVAL ~%sort_array_name%_%idx%~
+				SET EVAL ~%sort_array_name%_%idx%~ = EVAL ~%sort_array_name%_%j%~
+				SET EVAL ~%sort_array_name%_%j%~ = v1
+			END
+		END
+	END
+END
+
+/* SORT_NUMERIC_ARRAY */
+DEFINE_ACTION_MACRO SORT_NUMERIC_ARRAY
+BEGIN
+	OUTER_PATCH ~~ BEGIN LPM SORT_NUMERIC_ARRAY END
+END
+
+/* ADD_LUA_DEFINITION */
+DEFINE_ACTION_FUNCTION ADD_LUA_DEFINITION
+INT_VAR
+	traRef  = "-1"
+STR_VAR
+	varName = ~~
+RET
+	success
+BEGIN
+	COPY_EXISTING_REGEXP ~L_[a-zA-Z][a-zA-Z]_[a-zA-Z][a-zA-Z]\.LUA~ ~override~
+		LPF ADD_LUA_VARIABLE INT_VAR traRef = traRef STR_VAR varName = EVAL ~%varName%~ RET success END
+	BUT_ONLY IF_EXISTS
+	ACTION_IF (success) BEGIN
+		ACTION_FOR_EACH path IN ~lang/%EE_LANGUAGE%/override~ ~%USER_DIRECTORY%/override~ BEGIN
+			ACTION_IF (DIRECTORY_EXISTS ~%path%~) BEGIN
+				ACTION_BASH_FOR ~%path%~ ~L_[a-zA-Z][a-zA-Z]_[a-zA-Z][a-zA-Z]\.LUA~ BEGIN
+					COPY ~%BASH_FOR_FILESPEC%~ ~%BASH_FOR_FILESPEC%~
+						LPF ADD_LUA_VARIABLE INT_VAR traRef = traRef STR_VAR varName = EVAL ~%varName%~ RET success END
+					BUT_ONLY IF_EXISTS
+				END
+			END
+		END
+	END
+END
+
+/* ADD_LUA_VARIABLE */
+DEFINE_PATCH_FUNCTION ADD_LUA_VARIABLE
+INT_VAR
+	traRef = "-1"
+STR_VAR
+	varName = ~~
+RET
+	success
+BEGIN
+	SET success = 0
+	PATCH_IF (traRef >= 0 AND NOT ~%varName%~ STR_EQ ~~) BEGIN
+		SET startOfs = INDEX_BUFFER(~uiStrings[ %TAB%%WNL%]*=[ %TAB%%WNL%]*{~)
+		SET ofs1 = INDEX_BUFFER(~[ %TAB%]*[a-zA-Z_][a-zA-Z0-9_]*[ %TAB%]*=.+,~ startOfs)
+		SET failed = 0
+		PATCH_IF (ofs1 < 0) BEGIN
+			SET failed = 1
+		END
+		PATCH_IF (NOT failed) BEGIN
+			SET ofs2 = INDEX_BUFFER(~[%WNL%]~ ofs1)
+			PATCH_IF (ofs2 < ofs1) BEGIN
+				SET failed = 1
+			END
+		END
+		PATCH_IF (NOT failed) BEGIN
+			READ_ASCII ofs1 curLine (ofs2 - ofs1)
+			INNER_PATCH ~%curLine%~ BEGIN
+				SET v = INDEX_BUFFER(~[ %TAB%]*=[ %TAB%]*"[^"]+"~)
+				SET isStrref = (v < 0) ? 1 : 0
+			END
+			PATCH_IF (isStrref) BEGIN
+				SET number = RESOLVE_STR_REF((AT traRef))
+				TEXT_SPRINT line ~%TAB%%varName% = %number%,%LNL%~
+			END ELSE BEGIN
+				SPRINT text (AT traRef)
+				INNER_PATCH_SAVE text ~%text%~ BEGIN
+					REPLACE_TEXTUALLY ~%MNL%?%LNL%~ ~\n~
+					REPLACE_TEXTUALLY ~\([^\\]\)"~ ~\1\"~
+				END
+				TEXT_SPRINT line ~%TAB%%varName% = "%text%",%LNL%~
+			END
+			SET strlen = STRING_LENGTH ~%line%~
+			INSERT_BYTES ofs1 strlen
+			WRITE_ASCIIE ofs1 ~%line%~
+			SET success = 1
+		END
+	END
+END
+
+/* GET_LUA_VALUE */
+DEFINE_ACTION_FUNCTION GET_LUA_VALUE
+STR_VAR
+  varName = ""
+RET
+  value
+BEGIN
+	OUTER_SET value = "-1"
+	OUTER_TEXT_SPRINT luaFile ~L_%EE_LANGUAGE%.LUA~
+	ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%luaFile%~) BEGIN
+		OUTER_TEXT_SPRINT luaFile ~L_EN_US.LUA~
+		ACTION_IF (NOT FILE_EXISTS_IN_GAME ~%luaFile%~) BEGIN
+			OUTER_TEXT_SPRINT luaFile ~~
+			COPY_EXISTING_REGEXP - ~L_[a-zA-Z][a-zA-Z]_[a-zA-Z][a-zA-Z]\.LUA~ ~override~
+				PATCH_IF (~%luaFile%~ STR_EQ ~~) BEGIN
+					TEXT_SPRINT luaFile ~%SOURCE_FILE%~
+				END
+		END
+	END
+	ACTION_IF (FILE_EXISTS_IN_GAME ~%luaFile%~) BEGIN
+		COPY_EXISTING - ~%luaFile%~ ~override~
+			SET ofs1 = INDEX_BUFFER(~.*%varName%[ %TAB%]*=~)
+			PATCH_IF (ofs1 >= 0) BEGIN
+				SET ofs2 = INDEX_BUFFER(~[%WNL%]~ ofs1)
+				PATCH_IF (ofs2 > ofs1) BEGIN
+					READ_ASCII ofs1 line (ofs2 - ofs1)
+					INNER_PATCH_SAVE val ~%line%~ BEGIN REPLACE_TEXTUALLY ~.*=[ %TAB%]*\(-?[0-9]*\).*~ ~\1~ END
+					PATCH_IF (~%val%~ STR_EQ ~~) BEGIN
+						INNER_PATCH_SAVE string ~%line%~ BEGIN REPLACE_TEXTUALLY ~.*=[ %TAB%]*"\([^"]*\)".*~ ~\1~ END
+						INNER_PATCH_SAVE string ~%string%~ BEGIN REPLACE_TEXTUALLY ~\\n~ ~%LNL%~ END
+						SET value = RESOLVE_STR_REF(~%string%~)
+					END ELSE PATCH_IF (IS_AN_INT "val") BEGIN
+						SET value = val
+					END
+				END
+			END
+	END
+END
+
+/* GET_LUA_VALUE */
+DEFINE_PATCH_FUNCTION GET_LUA_VALUE
+STR_VAR
+	varName = ""
+RET
+	value
+BEGIN
+	INNER_ACTION BEGIN
+		LAF GET_LUA_VALUE STR_VAR varName = EVAL ~%varName%~ RET value END
+	END
+END
+
+DEFINE_ACTION_MACRO JOINABLE_NPC_ARRAYS BEGIN
+	ACTION_DEFINE_ASSOCIATIVE_ARRAY JOINABLE_NPC_ARRAY_2da BEGIN ~PDIALOG~ => ~~ END
+	ACTION_IF FILE_EXISTS_IN_GAME ~CAMPAIGN.2DA~ BEGIN
+		COPY_EXISTING ~CAMPAIGN.2DA~ ~override~
+			COUNT_2DA_ROWS 32 "cntrow"
+			FOR (i = 0; i < cntrow; i = i + 1) BEGIN
+				READ_2DA_ENTRY i 11 32 file
+				TO_UPPER file
+				PATCH_IF !(VARIABLE_IS_SET $JOINABLE_NPC_ARRAY_2da(~%file%~)) BEGIN
+					DEFINE_ASSOCIATIVE_ARRAY JOINABLE_NPC_ARRAY_2da BEGIN ~%file%~ => ~~ END
+				END
+			END
+		BUT_ONLY
+	END
+	ACTION_PHP_EACH JOINABLE_NPC_ARRAY_2da AS file => ~~ BEGIN
+		ACTION_IF FILE_EXISTS_IN_GAME ~%file%.2da~ BEGIN
+			COPY_EXISTING ~%file%.2da~ ~override~
+				COUNT_2DA_ROWS 3 "cntrow"
+				FOR (i = 1; i < cntrow; i = i + 1) BEGIN
+					READ_2DA_ENTRY i 0 3 "dv"
+					TO_UPPER dv
+					DEFINE_ASSOCIATIVE_ARRAY JOINABLE_NPC_ARRAY_dv BEGIN ~%dv%~ => ~~ END
+				END
+			BUT_ONLY
+		END
+	END
+	COPY_EXISTING_REGEXP GLOB ~.+\.CRE~ ~override~
+		PATCH_IF (%SOURCE_SIZE% > 0x2a8) BEGIN
+			SNPRINT 2 tt ~%SOURCE_RES%~
+			TO_UPPER tt
+			PATCH_IF ( ~%tt%~ STR_CMP ~TT~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~AERBOD01~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~E36~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~IDIOT01~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~NALDEAD~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~A~ ) AND ( ~%SOURCE_RES%~ STR_CMP ~BDCAELA2~ ) BEGIN
+				READ_ASCII 0x280 "deathvar" (32) NULL
+				TO_UPPER deathvar
+				PATCH_IF VARIABLE_IS_SET $JOINABLE_NPC_ARRAY_dv(~%deathvar%~) BEGIN
+					DEFINE_ASSOCIATIVE_ARRAY JOINABLE_NPC_ARRAY BEGIN ~%SOURCE_RES%~ => ~%deathvar%~ END
+				END
+				PATCH_IF NOT VARIABLE_IS_SET $JOINABLE_NPC_ARRAY_dv(~%deathvar%~) BEGIN
+					DEFINE_ASSOCIATIVE_ARRAY NON_JOINABLE_NPC_ARRAY BEGIN ~%SOURCE_RES%~ => ~%deathvar%~ END
+				END
+			END
+		END
+		BUT_ONLY
+END
+
+/* GET_BIT */
+DEFINE_PATCH_FUNCTION GET_BIT
+INT_VAR
+	number = 0
+	nth_bit = 0
+RET
+	bit_value
+BEGIN
+	SET bit_value = (number >> nth_bit) & 1
+END
+
+/* FC_GET_MOS_IDX */
+DEFINE_ACTION_FUNCTION FC_GET_MOS_IDX
+	INT_VAR number = 0
+	RET stridx
+BEGIN
+	OUTER_SPRINT stridx ~~
+	ACTION_IF ( number < 10 ) BEGIN OUTER_SPRINT ~stridx~ ~000%number%~ END ELSE
+	ACTION_IF ( number < 100 ) BEGIN OUTER_SPRINT ~stridx~ ~00%number%~ END ELSE
+	ACTION_IF ( number < 1000 ) BEGIN OUTER_SPRINT ~stridx~ ~0%number%~ END ELSE
+	BEGIN OUTER_SPRINT ~stridx~ ~%number%~ END
+END
+
+/* FC_GET_MOS_IDX */
+DEFINE_PATCH_FUNCTION FC_GET_MOS_IDX
+	INT_VAR number = 0
+	RET stridx
+BEGIN
+	INNER_ACTION BEGIN LAF FC_GET_MOS_IDX INT_VAR number RET stridx END END
+END
+
+/* FC_FIND_FREE_PVRZ */
+DEFINE_ACTION_FUNCTION FC_FIND_FREE_PVRZ
+	INT_VAR first = 0 max = 10000
+	RET index retidx
+BEGIN
+	OUTER_SET index = ( 0 - 1 )
+	OUTER_SPRINT retidx ~~
+	ACTION_IF ( max > 10000 ) BEGIN OUTER_SET max = 10000 END
+	OUTER_FOR ( i = first ; i < max ; ++i ) BEGIN
+		LAF FC_GET_MOS_IDX INT_VAR number = i RET idx = stridx END
+		ACTION_IF NOT FILE_EXISTS_IN_GAME ~MOS%idx%.PVRZ~ BEGIN OUTER_SET index = i OUTER_SPRINT retidx ~MOS%idx%~ OUTER_SET i = max END
+	END
+END
+
+/* FC_FIND_FREE_PVRZ */
+DEFINE_PATCH_FUNCTION FC_FIND_FREE_PVRZ
+	INT_VAR first = 0 max = 10000
+	RET index retidx
+BEGIN
+	INNER_ACTION BEGIN LAF FC_FIND_FREE_PVRZ INT_VAR first max RET index retidx END END
+END
+
+/* TO_HEX_NUMBER */
+DEFINE_ACTION_FUNCTION TO_HEX_NUMBER
+INT_VAR
+  value     = 0   // the decimal number
+  minDigits = 1   // min. number of digits in return value (not counting sign)
+  prefix    = 0   // whether to return number with "0x" prefix
+RET
+  hexNumber       // returned as string without prefix
+BEGIN
+  ACTION_IF (minDigits < 1) BEGIN OUTER_SET minDigits = 1 END
+  ACTION_IF (minDigits > 8) BEGIN OUTER_SET minDigits = 8 END
+  OUTER_TEXT_SPRINT hexNumber ~~
+  ACTION_DEFINE_ARRAY digit BEGIN ~0~ ~1~ ~2~ ~3~ ~4~ ~5~ ~6~ ~7~ ~8~ ~9~ ~a~ ~b~ ~c~ ~d~ ~e~ ~f~ END
+
+  ACTION_IF (value < 0) BEGIN
+    OUTER_SET signed = 1
+    OUTER_SET value = 0 - value
+  END ELSE BEGIN
+    OUTER_SET signed = 0
+  END
+
+  OUTER_WHILE (value != 0) BEGIN
+    OUTER_SET curDigit = value BAND 0xf
+    OUTER_SET value = value BLSR 4
+    OUTER_TEXT_SPRINT hexDigit $EVAL digit(~%curDigit%~)
+    OUTER_TEXT_SPRINT hexNumber ~%hexDigit%%hexNumber%~
+  END
+
+  OUTER_WHILE (STRING_LENGTH ~%hexNumber%~ < minDigits) BEGIN
+    OUTER_TEXT_SPRINT hexNumber ~0%hexNumber%~
+  END
+
+  ACTION_IF (prefix) BEGIN
+    OUTER_TEXT_SPRINT hexNumber ~0x%hexNumber%~
+  END
+
+  ACTION_IF (signed) BEGIN
+    OUTER_TEXT_SPRINT hexNumber ~-%hexNumber%~
+  END
+END
+
+/* TO_HEX_NUMBER */
+DEFINE_PATCH_FUNCTION TO_HEX_NUMBER
+INT_VAR
+  value     = 0
+  minDigits = 1
+  prefix    = 0
+RET
+  hexNumber
+BEGIN
+  INNER_ACTION BEGIN
+    LAF TO_HEX_NUMBER INT_VAR value = value minDigits = minDigits prefix = prefix RET hexNumber END
+  END
+END
+
+
+/**
+ * Converts a hexadecimal value back into a decimal number.
+ * STR_VAR hexNumber  A string containing a hexadecimal number without prefix.
+ * RET value          The resulting decimal number as int value. Returns -1 on error.
+ */
+/* TO_DEC_NUMBER */
+DEFINE_ACTION_FUNCTION TO_DEC_NUMBER
+STR_VAR
+  hexNumber  = ~~
+RET
+  value
+BEGIN
+  OUTER_SET value = "-1"
+
+  ACTION_IF (~%hexNumber%~ STRING_EQUAL ~~) BEGIN
+    OUTER_SET value = 0
+  END ELSE BEGIN
+    // checking for sign
+    ACTION_IF (~%hexNumber%~ STRING_MATCHES_REGEXP ~-.+~ = 0) BEGIN
+      OUTER_SET signed = 1
+      OUTER_PATCH_SAVE hexNumber ~%hexNumber%~ BEGIN REPLACE_TEXTUALLY ~^-~ ~~ END
+    END ELSE BEGIN
+      OUTER_SET signed = 0
+    END
+
+    // checking for prefix
+    ACTION_IF (~%hexNumber%~ STRING_MATCHES_REGEXP ~^0[xX].+~ = 0) BEGIN
+      OUTER_PATCH_SAVE hexNumber ~%hexNumber%~ BEGIN REPLACE_TEXTUALLY ~^0[xX]~ ~~ END
+    END
+
+    // converting number
+    OUTER_SET curValue = 0
+    OUTER_SET scale = 1
+    OUTER_SET strlen = STRING_LENGTH ~%hexNumber%~
+    OUTER_FOR (idx = strlen - 1; idx >= 0; --idx) BEGIN
+      OUTER_PATCH ~%hexNumber%~ BEGIN READ_BYTE idx hexDigit END
+      OUTER_SET hexDigit = hexDigit BAND 0xff
+      ACTION_IF (hexDigit >= 48 AND hexDigit <= 57) BEGIN // 0..9
+        OUTER_SET digit = hexDigit - 48
+      END ELSE ACTION_IF (hexDigit >= 65 AND hexDigit <= 70) BEGIN  // A..F
+        OUTER_SET digit = hexDigit - 55
+      END ELSE ACTION_IF (hexDigit >= 97 AND hexDigit <= 102) BEGIN // a..f
+        OUTER_SET digit = hexDigit - 87
+      END ELSE BEGIN
+        OUTER_SET digit = 0
+      END
+      OUTER_SET curValue += digit*scale
+      OUTER_SET scale = scale BLSL 4
+    END
+
+    ACTION_IF (signed) BEGIN
+      OUTER_SET curValue = 0 - curValue
+    END
+
+    OUTER_SET value = curValue
+  END
+END
+
+/* TO_DEC_NUMBER */
+DEFINE_PATCH_FUNCTION TO_DEC_NUMBER
+STR_VAR
+  hexNumber  = ~~
+RET
+  value
+BEGIN
+  INNER_ACTION BEGIN
+    LAF TO_DEC_NUMBER STR_VAR hexNumber = EVAL ~%hexNumber%~ RET value END
+  END
+END
+
+/* GET_SCRIPT_BLOCK */
+DEFINE_PATCH_FUNCTION GET_SCRIPT_BLOCK
+INT_VAR
+	start_offset  = 0
+	reverse       = 0
+STR_VAR
+	search_regexp = ~~
+RET
+	script_block
+	start_offset
+	end_offset
+BEGIN
+	SET offset = start_offset
+	PATCH_IF (offset < 0) BEGIN SET offset = 0 END
+	PATCH_IF (offset > BUFFER_LENGTH) BEGIN SET offset = BUFFER_LENGTH END
+	TEXT_SPRINT script_block ~~
+	SET start_offset = "-1"
+	SET end_offset = "-1"
+	PATCH_IF (NOT ~%search_regexp%~ STR_EQ ~~) BEGIN
+		PATCH_IF (reverse) BEGIN
+			SET offset = RINDEX_BUFFER(~%search_regexp%~ offset)
+		END ELSE BEGIN
+			SET offset = INDEX_BUFFER(~%search_regexp%~ offset)
+		END
+		PATCH_IF (offset >= 0) BEGIN
+			SET ofsStart = RINDEX_BUFFER(~^IF$~ offset)
+			PATCH_IF (ofsStart >= 0) BEGIN
+				SET ofsEnd = INDEX_BUFFER(~^END$~ offset)
+				PATCH_IF (ofsEnd >= 0) BEGIN
+					SET ofsEnd += 3
+					READ_ASCII ofsStart script_block (ofsEnd - ofsStart)
+					SET start_offset = ofsStart
+					SET end_offset = ofsEnd
+				END
+			END
+		END
+	END
+END
+
+/* ADD_SPLPROT_ENTRY */
+DEFINE_ACTION_FUNCTION ADD_SPLPROT_ENTRY
+	INT_VAR
+		stat_hex    = 1
+		value_hex   = 0
+		add_number  = 1
+	STR_VAR
+		label       = ~~
+		definition  = ~~
+	RET
+		index
+		exists
+		label1
+BEGIN
+	OUTER_SET index  = "-1"
+	OUTER_SET exists =   0
+	ACTION_IF (NOT ~%definition%~ STR_EQ ~~) BEGIN
+		//extract definition
+		OUTER_SPRINT ~stat~ ~~
+		OUTER_SPRINT ~value~ ~~
+		OUTER_SPRINT ~rel~ ~~
+		OUTER_INNER_PATCH_SAVE definition ~%definition%~ BEGIN
+			REPLACE_TEXTUALLY ~[ %TAB%]~ ~*~
+			SET lng  = BUFFER_LENGTH
+			SET true = 1
+			SET cmp  = 0
+			FOR ( i = 0 ; i < lng ; ++i ) BEGIN
+				READ_ASCII i z (1)
+				PATCH_IF ( ~%z%~ STR_CMP ~*~ ) BEGIN
+					PATCH_IF ( true = 1 ) BEGIN
+						PATCH_MATCH cmp WITH
+							0 BEGIN SPRINT ~stat~  ~%stat%%z%~ END
+							1 BEGIN SPRINT ~value~ ~%value%%z%~ END
+							2 BEGIN SPRINT ~rel~   ~%rel%%z%~ END
+						DEFAULT
+						END
+					END ELSE BEGIN
+						SET true = 1
+						SET cmp = cmp + 1
+						PATCH_MATCH cmp WITH
+							0 BEGIN SPRINT ~stat~  ~%stat%%z%~ END
+							1 BEGIN SPRINT ~value~ ~%value%%z%~ END
+							2 BEGIN SPRINT ~rel~   ~%rel%%z%~ END
+						DEFAULT
+						END
+					END
+				END ELSE BEGIN
+					SET true = 0
+				END
+			END
+		END
+		OUTER_SET stat  =  ~%stat%~
+		OUTER_SET value = ~%value%~
+		OUTER_SET rel   =   ~%rel%~
+		COPY_EXISTING ~splprot.2da~ ~override~
+			COUNT_2DA_ROWS 4 table
+			//find existing entry
+			FOR ( i = 0 ; i < table ; ++i ) BEGIN
+				SET true = 0
+				READ_2DA_ENTRY i 0 4 label1
+				READ_2DA_ENTRY i 1 4 stat1
+				PATCH_IF ( IS_AN_INT ~stat1~ )  AND ( stat = stat1 )   BEGIN SET true = true + 1 END
+				READ_2DA_ENTRY i 2 4 value1
+				PATCH_IF ( IS_AN_INT ~value1~ ) AND ( value = value1 ) BEGIN SET true = true + 1 END
+				READ_2DA_ENTRY i 3 4 rel1
+				PATCH_IF ( IS_AN_INT ~rel1~ )   AND ( rel = rel1 )     BEGIN SET true = true + 1 END
+				PATCH_IF ( true = 3 ) BEGIN
+					SET index = i
+					SET exists = 1
+					SET i = table
+					TEXT_SPRINT ~label1~ ~%label1%	%stat1%	%value1%	%rel1%~
+				END
+			END
+			//add_new_string to empty
+			PATCH_IF ( index < 0 ) BEGIN
+				SET trueex = 0
+				FOR ( i = 0 ; i < table ; ++i ) BEGIN
+					SET true = 0
+					PATCH_IF NOT trueex BEGIN
+						READ_2DA_ENTRY i 1 4 stat1
+						PATCH_IF ( ~%stat1%~  STR_EQ ~*~ ) BEGIN SET true = true + 1 END
+						READ_2DA_ENTRY i 1 4 value1
+						PATCH_IF ( ~%value1%~ STR_EQ ~*~ ) BEGIN SET true = true + 1 END
+						READ_2DA_ENTRY i 1 4 rel1
+						PATCH_IF ( ~%rel1%~   STR_EQ ~*~ ) BEGIN SET true = true + 1 END
+						PATCH_IF ( true = 3 ) BEGIN
+							SET index = i
+							SET i = table
+							PATCH_IF add_number BEGIN SPRINT nbr ~%index%_~ END ELSE BEGIN SPRINT nbr ~~ END
+							TEXT_SPRINT ~label1~ ~%nbr%%label%	%stat%	%value%	%rel%~
+							SET_2DA_ENTRY index 0 4 ~%nbr%%label%~
+							SET_2DA_ENTRY index 1 4 ~%stat%~
+							SET_2DA_ENTRY index 2 4 ~%value%~
+							SET_2DA_ENTRY index 3 4 ~%rel%~
+						END
+					END
+				END
+			END
+			//add_new_string
+			PATCH_IF ( index < 0 ) BEGIN
+				SET index = table
+				PATCH_IF (~%label%~ STR_EQ ~~) BEGIN TEXT_SPRINT label ~%index%~ END
+				PATCH_IF ( stat >= 0 ) AND ( stat_hex = 1 ) BEGIN
+					LPF TO_HEX_NUMBER INT_VAR value=stat minDigits=3 prefix=1 RET stat=hexNumber END
+				END
+				PATCH_IF ( value >= 0 ) AND ( value_hex = 1 ) BEGIN
+					LPF TO_HEX_NUMBER INT_VAR value=value prefix=1 RET value=hexNumber END
+				END
+				PATCH_IF add_number BEGIN SPRINT nbr ~%index%_~ END ELSE BEGIN SPRINT nbr ~~ END
+				TEXT_SPRINT ~label1~ ~%nbr%%label%	%stat%	%value%	%rel%~
+				INSERT_2DA_ROW index 4 ~%label1%~
+				PRETTY_PRINT_2DA
+			END
+			BUT_ONLY_IF_IT_CHANGES
+			IF_EXISTS
+	END
+END
+
+/* FC_ADD_CLAB_DATA */
+DEFINE_ACTION_FUNCTION FC_ADD_CLAB_DATA
+	INT_VAR
+		level = 1
+		top   = 1
+	STR_VAR
+		file  = ""
+		label = ""
+		abil  = ""
+		type  = "AP_"
+	RET
+		done
+BEGIN
+	OUTER_SET done = 0
+	OUTER_SET exists = 0
+	ACTION_IF ( ~%file%~ STR_CMP ~~ ) AND
+	          ( ~%abil%~ STR_CMP ~~ ) AND
+	          ( level > 0 ) AND
+	          ( STRING_LENGTH ~%abil%~ < 9 ) BEGIN
+		ACTION_IF NOT FILE_EXISTS_IN_GAME ~%file%.2da~ BEGIN
+			OUTER_SPRINT header ~	~
+			OUTER_SPRINT ability ~ABILITY1~
+			OUTER_FOR ( i = 1 ; i < 51 ; ++i ) BEGIN
+				OUTER_SPRINT header ~%header%	%i%~
+				OUTER_SPRINT ability ~%ability%	****~
+			END
+<<<<<<<< .../clabfile.2da
+2DA V1.0
+****
+%header%
+%ability%
+>>>>>>>>
+			COPY ~.../clabfile.2da~ ~override/%file%.2da~ EVALUATE_BUFFER PRETTY_PRINT_2DA
+		END
+		COPY_EXISTING ~%file%.2da~ ~override~
+			COUNT_2DA_COLS cols
+			SET rows = 0
+			PATCH_IF ( level < cols ) BEGIN exists = 1 END
+			PATCH_IF exists BEGIN
+				COUNT_2DA_ROWS cols rows
+				SET line = 0
+				PATCH_IF ( rows > 0 ) BEGIN
+					FOR ( i = 0 ; i < rows ; ++i ) BEGIN
+						READ_2DA_ENTRY i 0 cols lbl
+						READ_2DA_ENTRY i level cols value
+						PATCH_IF NOT done BEGIN
+							PATCH_IF ( ~%label%~ STR_EQ ~~ ) BEGIN
+								PATCH_IF ( ~%value%~ STR_EQ ~****~ ) BEGIN
+									SET_2DA_ENTRY i level cols ~%type%%abil%~
+									SET done = 1
+									SET i = rows
+								END
+							END ELSE BEGIN
+								PATCH_IF ( ~%label%~ STR_EQ ~%lbl%~ ) BEGIN
+									PATCH_IF ( ~%value%~ STR_EQ ~****~ ) BEGIN
+										SET_2DA_ENTRY i level cols ~%type%%abil%~
+										SET done = 1
+										SET i = rows
+									END
+								END
+							END
+						END
+					END
+				END
+				SET rows = rows + 1
+				PATCH_IF ( ~%label%~ STR_EQ ~~ ) BEGIN SPRINT label ~ABILITY%rows%~ END
+				FOR ( i = 1 ; i < cols ; ++i ) BEGIN
+					PATCH_IF ( i = level ) BEGIN SPRINT value ~%type%%abil%~
+					END ELSE BEGIN SPRINT value ~****~ END
+					SPRINT label ~%label%	%value%~
+				END
+				PATCH_IF top BEGIN SET pos = 0 END ELSE BEGIN SET pos = rows END
+				INSERT_2DA_ROW 0 cols ~%label%~
+				SET done = 1
+			END
+			BUT_ONLY_IF_IT_CHANGES
+	END
+END
+
+
+
+
+
+
+
+
