@@ -57,7 +57,7 @@ COPY_EXISTING ~ui.menu~ ~override~
 					END
 					//13 660 46 48
 					SET coord_x = coord_x + (width - 46) / 2 //coord_x + 6
-					SET coord_y = coord_y + height + 20
+					SET coord_y = coord_y + height + 8
 					SPRINT element_text ~button%LNL%%TAB%{ --achievements%LNL%%TAB%%TAB%enabled "worldScreen == e:GetActiveEngine() and zZachShowAchivements == 1 and zzShowAchs == 0%add_enabled%"%LNL%%TAB%%TAB%area %coord_x% %coord_y% 46 48%LNL%%TAB%%TAB%bam "ZZACHIVE"%LNL%%TAB%%TAB%scaleToClip%LNL%%TAB%%TAB%tooltip lua "zZachText.achievems"%LNL%%TAB%%TAB%glow lua	"zZshowAch == 1"%LNL%%TAB%%TAB%clickable lua "sidebarsGreyed %tilde%= 1"%LNL%%TAB%%TAB%action "%LNL%%TAB%%TAB%%TAB%Infinity_PushMenu('ACHIEVEMENTS')%LNL%%TAB%%TAB%"%LNL%%TAB%}~ //%element_text%%LNL%%TAB%
 					LPM FC_INSERT_MENU_ELEMENT
 				END
