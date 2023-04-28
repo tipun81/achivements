@@ -90,6 +90,54 @@ COPY_EXISTING ~ui.menu~ ~override~
 			REPLACE_TEXTUALLY ~name[ %TAB%]+['"]textflash['"]~ ~name 'zztextflash'~
 		END
 		
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label"
+			RET element_text success offset_start offset_end
+		END
+		SET menu_width = 0
+		SET menu_height = 0
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET menu_width = width
+			SET menu_height = height
+		END
+		
+		//icon
+		LPF FC_FIND_UI_MENU_ELEMENT_EX
+			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "sequence"
+			RET element_text success offset_start offset_end
+		END
+		SET icon_width = 0
+		SET icon_height = 0
+		SET icon_top = 0
+		PATCH_IF success BEGIN
+			LPF FC_GETSET_ELEMENT_AREA
+				STR_VAR element_text = EVAL "%element_text%"
+				RET coord_x coord_y width height element_text
+			END
+			SET icon_width = width
+			SET icon_height = height
+			SET icon_top = coord_y
+			PATCH_IF icon_width > icon_height BEGIN SET icon_width = icon_height END
+			ELSE BEGIN
+				PATCH_IF icon_width < icon_height BEGIN SET icon_height = icon_width END
+			END
+			SPRINT element_text ~label
+	{
+		area %coord_x% %icon_top% %icon_width% %icon_height%
+		bam lua "zZgetTFString(7)"
+		sequence 0
+		frame lua "zZgetTFFrame()"
+		scaleToClip
+	}~
+			LPM FC_UPDATE_MENU_ELEMENT
+		END
+		SET elem_heigt = (menu_height - (icon_top * 2)) / 5
+		
+		//BODY/DATE
 		SPRINT scrollbar ~GUISCRC~
 		LPF FC_FIND_UI_MENU_ELEMENT_EX
 			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "text" search_str = "getBodyString"
@@ -107,20 +155,34 @@ COPY_EXISTING ~ui.menu~ ~override~
 				END
 				~%MATCH0%~
 			END
-			SET coord_x = coord_x + 10
-			SET coord_y = coord_y + 54
-			SET width = width - 10
-			SET height = height - 27
 			INNER_PATCH_SAVE element_text_bak ~%element_text%~ BEGIN
 				REPLACE_TEXTUALLY ~getBodyString()~ ~zZgetTFString(9)~
 			END
+			SET pyA = icon_top + icon_height + 2
+			SET phA = elem_heigt * 3 / 2
+			SET pxB = coord_x + 10
+			SET pyB = pyA + phA
+			SET phB = elem_heigt
+			SET pwB = width - 10
 			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
 				REPLACE_TEXTUALLY ~getBodyString()~ ~zZgetTFString(3)~
 			END
-			SPRINT element_text ~%element_text%%LNL%%TAB%%element_text_bak%~
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_y = pyA height = phA coord_x width
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
+			SPRINT element_text_bakX ~%element_text%~
+			SPRINT element_text ~%element_text_bak%~
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x = pxB coord_y = pyB height = phB width = pwB
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
+			SPRINT element_text ~%element_text_bakX%%LNL%%TAB%%element_text%~
 			LPM FC_UPDATE_MENU_ELEMENT
 		END
-		
+		//title/subtitle
 		LPF FC_FIND_UI_MENU_ELEMENT_EX
 			STR_VAR menu_text = EVAL "%menu_menu%" element_name = "label" search_str = "getTitleString"
 			RET element_text success offset_start offset_end
@@ -133,10 +195,6 @@ COPY_EXISTING ~ui.menu~ ~override~
 				STR_VAR element_text = EVAL "%element_text%"
 				RET coord_x coord_y width height element_text
 			END
-			SET coord_x = coord_x + 10
-			SET coord_y = coord_y + 54
-			SET width = width - 10
-			SET height = height - 27
 			INNER_PATCH_SAVE element_text_bak ~%element_text%~ BEGIN
 				REPLACE_TEXTUALLY ~getTitleString()~ ~zZgetTFString(2)~
 				REPLACE_EVALUATE ~text[ %TAB%]+color[ %TAB%]+['"]*.+$~
@@ -150,11 +208,20 @@ COPY_EXISTING ~ui.menu~ ~override~
 				END
 				~%newtext%~
 			END
+			SET coord_y = icon_top + 5
+			SET height = elem_heigt
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x coord_y width height
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
 			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
 				REPLACE_TEXTUALLY ~getTitleString()~ ~zZgetTFString(1)~
 			END
 			LPM FC_UPDATE_MENU_ELEMENT
 			SPRINT element_text ~%element_text_bak%~
+			SET coord_y = icon_top + elem_heigt + 5
+			SET height = elem_heigt
 			LPF FC_GETSET_ELEMENT_AREA
 				INT_VAR set_area = 1 coord_x coord_y width height
 				STR_VAR element_text = EVAL "%element_text%"
@@ -167,6 +234,13 @@ COPY_EXISTING ~ui.menu~ ~override~
 			RET element_text success offset_start offset_end
 		END
 		PATCH_IF success BEGIN
+			SET coord_y = icon_top + elem_heigt + 5
+			SET height = elem_heigt
+			LPF FC_GETSET_ELEMENT_AREA
+				INT_VAR set_area = 1 coord_x coord_y width height
+				STR_VAR element_text = EVAL "%element_text%"
+				RET element_text
+			END
 			INNER_PATCH_SAVE element_text ~%element_text%~ BEGIN
 				REPLACE_TEXTUALLY ~getSubtitleString()~ ~zZgetTFString(2)~
 			END
