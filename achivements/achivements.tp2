@@ -6,7 +6,7 @@ VERSION ~v1.3~
 
 ALWAYS
 	ACTION_IF ((FILE_EXISTS ~dlc/sod-dlc.zip~) OR (FILE_EXISTS ~sod-dlc.zip~)) THEN BEGIN
-		FAIL ~DLC Merger is required before mods can be installed on this game.~
+		FAIL ~DLC Merger is required before mods can be installed on this game.~ 
 	END
 END
 
